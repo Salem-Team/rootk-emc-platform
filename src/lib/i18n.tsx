@@ -1,0 +1,473 @@
+"use client";
+
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+  type ReactNode,
+} from "react";
+
+export type Lang = "ar" | "en";
+type Dict = Record<string, string>;
+
+export const PROPOSAL_ID = "RTK-EMC-SA-2026-001";
+export const PUBLIC_SLUG = "rootk-emc-platform";
+
+const ar: Dict = {
+  navOverview: "نظرة عامة",
+  navPlatforms: "المنصات",
+  navModules: "الموديولات",
+  navTimeline: "الجدول",
+  navPrice: "العرض التجاري",
+  navTerms: "الشروط",
+  navCta: "عرض السعر",
+  brandSub: "رووتك سيستمز",
+  commercialQuotation: "عرض تجاري",
+  proposalId: "رقم العرض",
+  presentedTo: "مقدَّم إلى",
+  clientPlaceholder: "مركز صيانة إلكترونيات — المملكة العربية السعودية",
+  heroEyebrow: "عرض فني وتجاري · ROOTK Systems",
+  heroTitle: "نظام إدارة مركز صيانة الإلكترونيات والتجارة الإلكترونية وخدمات الشركات",
+  heroSubtitle: "Electronics Maintenance Center, E-Commerce & Corporate Services Platform",
+  heroLede:
+    "منصة برمجية مخصصة بالكامل لتشغيل مركز صيانة إلكترونيات في المملكة العربية السعودية: تطبيق عملاء، تطبيق مندوبي ميدان، محرك صيانة وورشة، متجر إلكتروني، بوابة B2B، ولوحة ERP إدارية — مع موقع شركة متكامل ضمن نفس السعر.",
+  preparedBy: "مقدَّم من",
+  client: "العميل",
+  currency: "العملة",
+  duration: "مدة التنفيذ",
+  durationValue: "50 يومًا تقويميًا",
+  priceShort: "إجمالي قيمة المشروع",
+  priceAmount: "197,000",
+  priceWords: "197,000 جنيه مصري فقط لا غير",
+  egp: "جنيه مصري",
+  overviewEyebrow: "ملخص تنفيذي",
+  overviewTitle: "أربع منصات متكاملة + بوابة شركات",
+  overviewLede:
+    "جميع المكونات تعمل على باكند موحّد وقاعدة بيانات سحابية واحدة. الحل مبني خصيصًا وفق إجراءات التشغيل والصلاحيات والمتطلبات المالية وهوية العميل — وليس ERP جاهزًا أو قالبًا عامًا.",
+  customTitle: "تطوير مخصص وملكية كاملة",
+  customLede:
+    "ROOTK Systems تبني المنصة وتخصصها حسب متطلبات العميل. لا توجد رسوم ترخيص سنوية على الكود المخصص المتفق عليه. التسليم يشمل: سورس كود، مستودعات Git، ملفات Figma، هيكل قاعدة البيانات، والتوثيق الفني — وفق العقد النهائي.",
+  platformsEyebrow: "هيكل الحل",
+  platformsTitle: "المنصات الأساسية",
+  modulesEyebrow: "النطاق الوظيفي",
+  modulesTitle: "الموديولات التفصيلية",
+  techEyebrow: "التقنية",
+  techTitle: "البنية التقنية والتكاملات",
+  techLede:
+    "اقتراح تقني قابل للصيانة: Flutter للتطبيقات، Laravel أو Node.js للباكند، لوحة ERP ويب، موقع شركة متكامل، قاعدة بيانات سحابية موحّدة، FCM، Google Maps، QR، OTP، وبوابات دفع. طرق الدفع المطلوبة: Mada، Visa، Mastercard، Apple Pay. يشمل نطاق التكامل الفوترة الإلكترونية السعودية وتوافق ZATCA. التكاملات الخارجية تخضع لتوفر الـ APIs الرسمية وموافقة المزود وحسابات التاجر والاعتمادات ورسوم الطرف الثالث — ولا يُفترض تفعيلها مسبقًا.",
+  timelineEyebrow: "التنفيذ",
+  timelineTitle: "مدة التنفيذ: 50 يومًا تقويميًا",
+  timelineLede:
+    "تبدأ المدة من تاريخ توقيع العقد. الالتزام بالموعد يتطلب تسليم الملاحظات والموافقات والمحتوى والاعتمادات ووصول الطرف الثالث في وقتها.",
+  priceEyebrow: "العرض التجاري",
+  priceTitle: "الاستثمار في الحل",
+  priceIntro: "سعر ثابت لكامل النطاق المتفق عليه:",
+  priceIncludes: "يشمل السعر التطبيقات، الـ ERP، الصيانة والورشة، المتجر، بوابة B2B، الموقع، الباكند، التصميم، الاختبار، النشر، والتسليم.",
+  paymentsTitle: "جدول الدفعات",
+  warrantyEyebrow: "الضمان",
+  warrantyTitle: "ضمان ودعم فني لمدة 12 شهرًا",
+  warrantyLede:
+    "تبدأ المدة من التسليم الفعلي والإطلاق وفق العقد. تشمل إصلاح الأخطاء والعيوب البرمجية والدعم الفني للمشكلات المتعلقة بالوظائف المسلّمة. لا تشمل تلقائيًا: موديولات جديدة، ميزات جديدة، تعديلات جوهرية على مسارات معتمدة، تكاملات إضافية، رسوم مزودي الطرف الثالث، أو تكاليف الاستضافة — وأي تطوير جديد يُسعَّر منفصلاً.",
+  termsTitle: "الحدود التجارية والأحكام التعاقدية",
+  closingTitle: "ROOTK Systems",
+  closingText: "عرض فني وتجاري لمنصة مركز صيانة الإلكترونيات والتجارة الإلكترونية وخدمات الشركات.",
+  footerTagline: "Your Technology Partner for a Bigger Tomorrow.",
+  footerWeb: "الموقع الإلكتروني",
+  langAria: "تبديل اللغة",
+  printPdf: "طباعة / PDF",
+  acceptTitle: "اعتماد العرض",
+  acceptNote: "للاعتماد النهائي يتم الاتفاق عبر العقد الموقّع بين الطرفين.",
+};
+
+const en: Dict = {
+  navOverview: "Overview",
+  navPlatforms: "Platforms",
+  navModules: "Modules",
+  navTimeline: "Timeline",
+  navPrice: "Commercial Offer",
+  navTerms: "Terms",
+  navCta: "View pricing",
+  brandSub: "ROOTK Systems",
+  commercialQuotation: "Commercial Proposal",
+  proposalId: "Proposal ID",
+  presentedTo: "Presented to",
+  clientPlaceholder: "Electronics Maintenance Center — Kingdom of Saudi Arabia",
+  heroEyebrow: "Technical & Commercial Offer · ROOTK Systems",
+  heroTitle: "Electronics Maintenance Center, E-Commerce & Corporate Services Management System",
+  heroSubtitle: "نظام إدارة مركز صيانة الإلكترونيات والتجارة الإلكترونية وخدمات الشركات",
+  heroLede:
+    "A fully custom software platform for an electronics maintenance center in Saudi Arabia: customer app, field-rep app, maintenance & workshop engine, e-commerce store, B2B portal, and ERP admin dashboard — with a corporate website included in the same price.",
+  preparedBy: "Prepared by",
+  client: "Client",
+  currency: "Currency",
+  duration: "Duration",
+  durationValue: "50 calendar days",
+  priceShort: "Total project value",
+  priceAmount: "197,000",
+  priceWords: "EGP 197,000 only",
+  egp: "EGP",
+  overviewEyebrow: "Executive summary",
+  overviewTitle: "Four integrated platforms + corporate portal",
+  overviewLede:
+    "All components run on one unified backend and cloud database. The solution is custom-built around the client’s workflows, permissions, financial needs, and branding — not a ready-made ERP or generic template.",
+  customTitle: "Custom development & full ownership",
+  customLede:
+    "ROOTK Systems builds and customizes the platform for the client. No annual software license fees on the agreed custom code. Handover includes source code, Git repositories, Figma files, database structure, and technical documentation — per the signed contract.",
+  platformsEyebrow: "Solution structure",
+  platformsTitle: "Primary platforms",
+  modulesEyebrow: "Functional scope",
+  modulesTitle: "Detailed modules",
+  techEyebrow: "Technology",
+  techTitle: "Technical architecture & integrations",
+  techLede:
+    "Suggested maintainable stack: Flutter for mobile, Laravel or Node.js for backend, web ERP, integrated corporate website, unified cloud database, FCM, Google Maps, QR, OTP, and payment gateways. Requested methods: Mada, Visa, Mastercard, Apple Pay. Includes Saudi e-invoicing / ZATCA compatibility scope. External integrations depend on official APIs, provider approval, merchant accounts, credentials, and third-party fees — and are not assumed pre-activated.",
+  timelineEyebrow: "Delivery",
+  timelineTitle: "Implementation: 50 calendar days",
+  timelineLede:
+    "Duration starts from the contract signing date. On-time delivery requires timely client feedback, approvals, content, credentials, and third-party access.",
+  priceEyebrow: "Commercial offer",
+  priceTitle: "Investment in the solution",
+  priceIntro: "Fixed price for the full agreed scope:",
+  priceIncludes:
+    "Includes apps, ERP, maintenance & workshop, store, B2B portal, website, backend, UI/UX, testing, deployment, and handover.",
+  paymentsTitle: "Payment schedule",
+  warrantyEyebrow: "Warranty",
+  warrantyTitle: "12-month warranty & technical support",
+  warrantyLede:
+    "Starts from actual handover and launch per the agreement. Covers bug fixing, defects in delivered functionality, and related technical support. Not automatically included: new modules/features, major workflow changes, extra integrations, third-party fees, or hosting — any new development is quoted separately.",
+  termsTitle: "Commercial boundaries & contractual terms",
+  closingTitle: "ROOTK Systems",
+  closingText: "Technical and commercial proposal for the Electronics Maintenance Center, E-Commerce & Corporate Services Platform.",
+  footerTagline: "Your Technology Partner for a Bigger Tomorrow.",
+  footerWeb: "Website",
+  langAria: "Switch language",
+  printPdf: "Print / PDF",
+  acceptTitle: "Proposal acceptance",
+  acceptNote: "Final acceptance is formalized through the signed contract between both parties.",
+};
+
+type LangContextValue = {
+  lang: Lang;
+  setLang: (lang: Lang) => void;
+  toggleLang: () => void;
+  t: (key: string) => string;
+  dir: "rtl" | "ltr";
+};
+
+const LangContext = createContext<LangContextValue | null>(null);
+
+export function LanguageProvider({ children }: { children: ReactNode }) {
+  const [lang, setLangState] = useState<Lang>("ar");
+
+  useEffect(() => {
+    const saved = window.localStorage.getItem("rootk-emc-quot-lang");
+    if (saved === "ar" || saved === "en") setLangState(saved);
+  }, []);
+
+  const setLang = useCallback((next: Lang) => {
+    setLangState(next);
+    window.localStorage.setItem("rootk-emc-quot-lang", next);
+    document.documentElement.lang = next;
+    document.documentElement.dir = next === "ar" ? "rtl" : "ltr";
+  }, []);
+
+  const toggleLang = useCallback(() => {
+    setLang(lang === "ar" ? "en" : "ar");
+  }, [lang, setLang]);
+
+  useEffect(() => {
+    document.documentElement.lang = lang;
+    document.documentElement.dir = lang === "ar" ? "rtl" : "ltr";
+  }, [lang]);
+
+  const dict = lang === "ar" ? ar : en;
+  const t = useCallback((key: string) => dict[key] ?? key, [dict]);
+
+  const value = useMemo(
+    () => ({
+      lang,
+      setLang,
+      toggleLang,
+      t,
+      dir: (lang === "ar" ? "rtl" : "ltr") as "rtl" | "ltr",
+    }),
+    [lang, setLang, toggleLang, t],
+  );
+
+  return <LangContext.Provider value={value}>{children}</LangContext.Provider>;
+}
+
+export function useLang() {
+  const ctx = useContext(LangContext);
+  if (!ctx) throw new Error("useLang must be used within LanguageProvider");
+  return ctx;
+}
+
+export type ModuleBlock = {
+  code: string;
+  title: string;
+  en: string;
+  items: string[];
+};
+
+export const content = {
+  platforms: {
+    ar: [
+      { title: "تطبيق العملاء", text: "iOS و Android — طلبات الصيانة، المتابعة، الدفع، والمتجر." },
+      { title: "تطبيق المندوب الميداني", text: "Mobile / PWA — الاستلام والتسليم والملاحة والمدفوعات." },
+      { title: "لوحة ERP الإدارية", text: "تشغيل كامل للفروع والورشة والمخزون والمالية." },
+      { title: "الموقع والمتجر الإلكتروني", text: "موقع شركة متكامل مع متجر — مشمول في السعر." },
+      { title: "بوابة خدمات الشركات B2B", text: "عقود وصيانة مجمّعة وتقارير وفواتير للشركات." },
+    ],
+    en: [
+      { title: "Customer Mobile App", text: "iOS & Android — requests, tracking, payments, and store." },
+      { title: "Field Representative App", text: "Mobile / PWA — pickup, delivery, navigation, collections." },
+      { title: "ERP Admin Dashboard", text: "Branches, workshop, inventory, finance, and operations." },
+      { title: "Website & E-Commerce", text: "Corporate site with integrated store — included in price." },
+      { title: "B2B Corporate Portal", text: "Contracts, bulk maintenance, invoices, and reports." },
+    ],
+  },
+  modules: {
+    ar: [
+      {
+        code: "01",
+        title: "تطبيق العملاء",
+        en: "Customer Mobile Application",
+        items: [
+          "تسجيل ودخول وإدارة الملف الشخصي",
+          "إنشاء طلبات صيانة مع الفئة والماركة والموديل والسيريال/IMEI",
+          "وصف العطل ورفع صور وفيديو",
+          "استلام بالفرع أو استلام من المنزل عبر Google Maps مع تقدير تكلفة الرحلة قبل التأكيد",
+          "متابعة الحالة وتقارير الفحص وعروض الإصلاح والموافقة/الرفض والتكاليف الإضافية",
+          "دفع إلكتروني أو عند التسليم، سجل الصيانة، شهادات ضمان رقمية",
+          "طلبات عقود الشركات وتصفح المتجر وشراء المنتجات والإكسسوارات",
+          "دعم كامل للعربية والإنجليزية مع RTL/LTR",
+        ],
+      },
+      {
+        code: "02",
+        title: "تطبيق المندوب الميداني",
+        en: "Field Representative Application",
+        items: [
+          "استلام مهام الاستلام والتسليم وعرض التفاصيل",
+          "موقع العميل والملاحة عبر Google Maps",
+          "التقاط أربع صور لحالة الجهاز عند الاستلام وتوثيق التسليم",
+          "تسجيل المدفوعات المحصّلة وتحديث حالة المهمة",
+          "تأكيد التسليم بـ OTP وعرض المهام المكتملة والمعلّقة",
+        ],
+      },
+      {
+        code: "03",
+        title: "محرك إدارة الصيانة والورشة",
+        en: "Maintenance Management Engine",
+        items: [
+          "طلبات الصيانة وأرقام أوامر فريدة وملصقات QR/Barcode وتتبع دورة حياة الجهاز",
+          "استلام الجهاز: 4 صور إلزامية، قفل الشاشة/إخلاء المسؤولية، ربط الموظف والتاريخ",
+          "فحص فني، قطع غيار مع حجز من مخزن الورشة، أجور عمل، مدة إصلاح وضمان",
+          "سير عمل عرض السعر والموافقة/الرفض وتحرير الحجز ورسوم الفحص والاستلام",
+          "عروض إصلاح إضافية عند اكتشاف أعطال جديدة مع إيقاف العمل حتى الموافقة",
+          "فحص جودة إلكتروني (شاشة، صوت، شحن، كاميرات…)",
+          "تسليم بـ OTP ومنع إغلاق الأمر قبل التحقق",
+          "ضمان وRMA: شهادات رقمية، ربط بالسيريال، إعادة فتح تحت الضمان دون تكرار إيراد الأجور",
+        ],
+      },
+      {
+        code: "04",
+        title: "المتجر الإلكتروني",
+        en: "E-Commerce Store",
+        items: [
+          "كتالوج إلكترونيات وأجهزة وإكسسوارات وقطع غيار مع فئات وبحث وتصفية",
+          "إكسسوارات متوافقة مع الموديلات وتوصيات أثناء طلبات الصيانة",
+          "سلة، كوبونات، ضريبة القيمة المضافة، تكلفة التوصيل، دفع أونلاين أو عند الاستلام",
+          "مخزنان: صالة عرض للمبيعات الفورية، وورشة لقطع الصيانة",
+          "كميات، مخزون محجوز، تحديث تلقائي، تنبيهات نقص، وتتبع حركة المخزون",
+        ],
+      },
+      {
+        code: "05",
+        title: "بوابة خدمات الشركات B2B",
+        en: "B2B Corporate Services Portal",
+        items: [
+          "تسجيل حسابات الشركات وطلبات عقود صيانة رقمية",
+          "تحديد عدد الأجهزة والفروع ونوع التغطية",
+          "سجل أجهزة بالسيريال وطلبات صيانة مجمّعة",
+          "متابعة الطلبات والفواتير الضريبية المجمّعة وتقارير وتاريخ الصيانة",
+        ],
+      },
+      {
+        code: "06",
+        title: "لوحة ERP الإدارية",
+        en: "ERP Administration Dashboard",
+        items: [
+          "لوحة تنفيذية، فروع، صيانة، ورشة، فنيون، مندوبون، مخزون ومستودعات",
+          "منتجات، متجر، مبيعات، عملاء، حسابات شركات، فوترة وضرائب",
+          "تقارير مالية تفصل إيراد المتجر وقطع الصيانة وأجور الإصلاح",
+          "عمولات الفنيين وفق النسبة المتفق عليها على أجور الأوامر المكتملة والمدفوعة",
+          "مراقبة تشغيلية وتنبيهات التأخير وأجهزة غير مستلمة أكثر من 30 و60 يومًا",
+          "أدوار: مدير عام، استقبال/كاشير، فني، مندوب، محاسب — مع سجلات تدقيق",
+          "مستخدمون وصلاحيات، إشعارات، وإعدادات النظام",
+        ],
+      },
+      {
+        code: "07",
+        title: "الموقع الإلكتروني للشركة",
+        en: "Corporate Website",
+        items: [
+          "الرئيسية، عن المركز، الفروع، الخدمات، نقاط طلب الصيانة",
+          "المتجر المتكامل وبيانات التواصل وتتبع سريع برقم الطلب",
+          "عربي وإنجليزي وتصميم متجاوب بالكامل",
+          "الموقع والمتجر مشمولان في سعر المشروع — ليسا خدمة اختيارية إضافية",
+        ],
+      },
+    ] as ModuleBlock[],
+    en: [
+      {
+        code: "01",
+        title: "Customer Mobile Application",
+        en: "Customer Mobile Application",
+        items: [
+          "Registration, authentication, and profile management",
+          "Create maintenance requests with category, brand, model, serial/IMEI",
+          "Fault description with photo and video uploads",
+          "Branch drop-off or home pickup via Google Maps with estimated trip cost before confirmation",
+          "Status tracking, inspection reports, repair quotes, approve/reject, extra costs",
+          "Electronic or cash-on-delivery payment, history, digital warranty certificates",
+          "Corporate contract requests and integrated store purchases",
+          "Full Arabic/English with RTL/LTR",
+        ],
+      },
+      {
+        code: "02",
+        title: "Field Representative Application",
+        en: "Field Representative Application",
+        items: [
+          "Receive pickup/delivery assignments and view task details",
+          "Customer location and navigation via Google Maps",
+          "Capture four condition photos on reception and record handover details",
+          "Record collected payments and update task status",
+          "OTP delivery confirmation and completed/pending task views",
+        ],
+      },
+      {
+        code: "03",
+        title: "Maintenance Management Engine",
+        en: "Maintenance Management Engine",
+        items: [
+          "Requests, unique order numbers, QR/barcode stickers, full lifecycle tracking",
+          "Reception: 4 mandatory photos, screen-lock/disclaimer, employee and date linkage",
+          "Diagnosis, spare-parts reservation from workshop stock, labor, ETA, warranty period",
+          "Quotation workflow with approve/reject, reservation release, inspection/pickup fees",
+          "Additional quotations when new faults are found — pause until customer approval",
+          "QA checklist (screen, audio, charging, cameras, etc.)",
+          "OTP delivery and block final closure until verification",
+          "Warranty & RMA: digital certificates, serial linkage, reopen under warranty without duplicate labor revenue",
+        ],
+      },
+      {
+        code: "04",
+        title: "E-Commerce Store",
+        en: "E-Commerce Store",
+        items: [
+          "Catalog for electronics, devices, accessories, spare parts with categories and filters",
+          "Model-compatible accessories and recommendations during maintenance requests",
+          "Cart, coupons, VAT, delivery cost, online payment or COD",
+          "Two inventories: showroom for online sales and workshop for maintenance parts",
+          "Quantities, reserved stock, auto updates, low-stock alerts, movement tracking",
+        ],
+      },
+      {
+        code: "05",
+        title: "B2B Corporate Services Portal",
+        en: "B2B Corporate Services Portal",
+        items: [
+          "Corporate registration and digital maintenance contract requests",
+          "Define device counts, branches, and coverage type",
+          "Device registry by serial and bulk maintenance requests",
+          "Track requests, consolidated tax invoices, reports, and history",
+        ],
+      },
+      {
+        code: "06",
+        title: "ERP Administration Dashboard",
+        en: "ERP Administration Dashboard",
+        items: [
+          "Executive dashboard, branches, maintenance, workshop, technicians, field reps, inventory/warehouses",
+          "Products, e-commerce, sales, customers, corporate accounts, invoicing & tax",
+          "Financial reports separating store, spare-parts, and labor revenue",
+          "Technician commissions on agreed % of labor for completed paid orders",
+          "Operational monitoring and alerts for delayed / uncollected devices (30 & 60 days)",
+          "Roles: GM, reception/cashier, technician, field rep, accountant — with audit logs",
+          "Users & permissions, notifications, and system settings",
+        ],
+      },
+      {
+        code: "07",
+        title: "Corporate Website",
+        en: "Corporate Website",
+        items: [
+          "Home, about, branches, services, maintenance entry points",
+          "Integrated store, contact info, quick tracking by request number",
+          "Arabic & English, fully responsive",
+          "Website and store are included in the project price — not optional add-ons",
+        ],
+      },
+    ] as ModuleBlock[],
+  },
+  timeline: {
+    ar: [
+      "تأكيد المتطلبات وتخطيط المشروع",
+      "تصميم UI/UX والاعتماد",
+      "بنية الباكند وقاعدة البيانات",
+      "تطوير ERP وموديولات الصيانة",
+      "تطوير تطبيقات الموبايل",
+      "تطوير الموقع والمتجر",
+      "التكاملات الخارجية",
+      "الاختبار وضمان الجودة والنشر والتسليم",
+    ],
+    en: [
+      "Requirements confirmation and project planning",
+      "UI/UX design and approval",
+      "Backend architecture and database",
+      "ERP and maintenance modules",
+      "Mobile application development",
+      "Website and e-commerce development",
+      "External integrations",
+      "Testing, QA, deployment, and handover",
+    ],
+  },
+  payments: [
+    { pct: "30%", amount: "59,100", ar: "عند توقيع العقد وبدء العمل", en: "Upon contract signing and commencement of work" },
+    { pct: "20%", amount: "39,400", ar: "عند عرض واعتماد تصميمات UI/UX", en: "Upon presentation and approval of UI/UX designs" },
+    { pct: "30%", amount: "59,100", ar: "عند التسليم النهائي للمشروع", en: "Upon final project delivery and handover" },
+    { pct: "20%", amount: "39,400", ar: "بعد 30 يومًا من التسليم والاختبار العملي", en: "After 30 days from handover and practical testing" },
+  ],
+  terms: {
+    ar: [
+      "التنفيذ محدود بالموديولات والميزات والمخرجات الموضحة صراحةً في هذا العرض.",
+      "أي متطلبات أو تعديلات أو تكاملات خارج النطاق المعتمد تحتاج تقييمًا وتسعيرًا وموافقة كتابية منفصلة.",
+      "هذا حل مخصص مبني وفق متطلبات تشغيل العميل — وليس بيع ERP جاهز عام.",
+      "يلتزم العميل بتوفير البيانات والهوية والمحتوى والموافقات واعتمادات الطرف الثالث وحسابات بوابات الدفع والردود في وقتها.",
+      "تكاليف الاستضافة والبنية السحابية منفصلة عن سعر التطوير 197,000 جنيه ما لم يُتفق كتابيًا على خلاف ذلك.",
+      "رسوم الطرف الثالث (SMS/OTP، بوابات الدفع، Google Maps، Firebase المدفوع، الاستضافة، الشحن، تراخيص API) يدفعها العميل منفصلاً.",
+      "أول 12 شهرًا ضمان ودعم فني مشمولة. أي صيانة لاحقة اختيارية وباتفاق منفصل.",
+      "ملكية السورس والملكية الفكرية المتفق عليها تنتقل وفق العقد الموقّع.",
+      "مراجعة القبول تتم على النطاق المسلّم. الدفعة الأخيرة (20%) مستحقة بعد 30 يومًا من التسليم والاختبار العملي.",
+      "الأسعار بالجنيه المصري ولا تشمل ضريبة القيمة المضافة (VAT) إن وُجدت وفق الأنظمة المعمول بها.",
+    ],
+    en: [
+      "Implementation is limited to the modules, features, and deliverables explicitly described in this proposal.",
+      "Anything outside the approved scope requires separate assessment, pricing, and written approval.",
+      "This is a custom-built solution for the client’s operations — not a generic ready-made ERP sale.",
+      "The client provides business data, branding, content, approvals, third-party credentials, payment merchant accounts, and timely feedback.",
+      "Hosting and cloud infrastructure costs are separate from the EGP 197,000 development price unless explicitly agreed in writing.",
+      "Third-party fees (SMS/OTP, payment gateways, Google Maps, paid Firebase, hosting, shipping, API licenses) are paid separately by the client.",
+      "The first 12 months of warranty and technical support are included. Ongoing maintenance afterward is optional under a separate agreement.",
+      "Agreed source code and IP transfer per the signed contract.",
+      "Acceptance reviews the delivered scope. The final 20% is due 30 days after handover and practical testing.",
+      "Prices are in EGP and do not include VAT if applicable under prevailing regulations.",
+    ],
+  },
+};
