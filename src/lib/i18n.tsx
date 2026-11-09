@@ -13,7 +13,7 @@ import {
 export type Lang = "ar" | "en";
 type Dict = Record<string, string>;
 
-export const PROPOSAL_ID = "RTK-EMC-SA-2026-001";
+export const PROPOSAL_ID = "215";
 export const PUBLIC_SLUG = "rootk-emc-platform";
 
 const ar: Dict = {
@@ -38,7 +38,7 @@ const ar: Dict = {
   client: "العميل",
   currency: "العملة",
   duration: "مدة التنفيذ",
-  durationValue: "50 يومًا تقويميًا",
+  durationValue: "50 يوم عمل",
   priceShort: "إجمالي قيمة المشروع",
   priceAmount: "197,000",
   priceWords: "197,000 جنيه مصري فقط لا غير",
@@ -59,9 +59,9 @@ const ar: Dict = {
   techLede:
     "اقتراح تقني قابل للصيانة: Flutter للتطبيقات، Laravel أو Node.js للباكند، لوحة ERP ويب، موقع شركة متكامل، قاعدة بيانات سحابية موحّدة، FCM، Google Maps، QR، OTP، وبوابات دفع. طرق الدفع المطلوبة: Mada، Visa، Mastercard، Apple Pay. يشمل نطاق التكامل الفوترة الإلكترونية السعودية وتوافق ZATCA. التكاملات الخارجية تخضع لتوفر الـ APIs الرسمية وموافقة المزود وحسابات التاجر والاعتمادات ورسوم الطرف الثالث — ولا يُفترض تفعيلها مسبقًا.",
   timelineEyebrow: "التنفيذ",
-  timelineTitle: "مدة التنفيذ: 50 يومًا تقويميًا",
+  timelineTitle: "مدة التنفيذ: 50 يوم عمل",
   timelineLede:
-    "تبدأ المدة من تاريخ توقيع العقد. الالتزام بالموعد يتطلب تسليم الملاحظات والموافقات والمحتوى والاعتمادات ووصول الطرف الثالث في وقتها.",
+    "تبدأ المدة من تاريخ توقيع العقد (أيام عمل). الالتزام بالموعد يتطلب تسليم الملاحظات والموافقات والمحتوى والاعتمادات ووصول الطرف الثالث في وقتها.",
   priceEyebrow: "العرض التجاري",
   priceTitle: "الاستثمار في الحل",
   priceIntro: "سعر ثابت لكامل النطاق المتفق عليه:",
@@ -104,7 +104,7 @@ const en: Dict = {
   client: "Client",
   currency: "Currency",
   duration: "Duration",
-  durationValue: "50 calendar days",
+  durationValue: "50 working days",
   priceShort: "Total project value",
   priceAmount: "197,000",
   priceWords: "EGP 197,000 only",
@@ -125,9 +125,9 @@ const en: Dict = {
   techLede:
     "Suggested maintainable stack: Flutter for mobile, Laravel or Node.js for backend, web ERP, integrated corporate website, unified cloud database, FCM, Google Maps, QR, OTP, and payment gateways. Requested methods: Mada, Visa, Mastercard, Apple Pay. Includes Saudi e-invoicing / ZATCA compatibility scope. External integrations depend on official APIs, provider approval, merchant accounts, credentials, and third-party fees — and are not assumed pre-activated.",
   timelineEyebrow: "Delivery",
-  timelineTitle: "Implementation: 50 calendar days",
+  timelineTitle: "Implementation: 50 working days",
   timelineLede:
-    "Duration starts from the contract signing date. On-time delivery requires timely client feedback, approvals, content, credentials, and third-party access.",
+    "Duration starts from the contract signing date (working days). On-time delivery requires timely client feedback, approvals, content, credentials, and third-party access.",
   priceEyebrow: "Commercial offer",
   priceTitle: "Investment in the solution",
   priceIntro: "Fixed price for the full agreed scope:",

@@ -211,7 +211,7 @@ export default function HomePage() {
               <p className="text-sm leading-6 text-mute">{t("timelineLede")}</p>
               <div className="mt-4 inline-flex items-center gap-2 rounded-full bg-navy/8 px-3 py-1.5 text-sm font-bold text-navy">
                 <CalendarDays className="h-4 w-4" />
-                <span className="font-en">50 calendar days</span>
+                <span className="font-en">{t("durationValue")}</span>
               </div>
             </div>
           </Reveal>

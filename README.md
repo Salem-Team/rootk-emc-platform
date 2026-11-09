@@ -4,9 +4,9 @@ Independent commercial proposal:
 
 **Electronics Maintenance Center, E-Commerce & Corporate Services Management System**
 
-- Proposal ID: `RTK-EMC-SA-2026-001`
+- Proposal ID: `215`
 - Total: **EGP 197,000**
-- Duration: **50 calendar days**
+- Duration: **50 working days**
 - Warranty: **12 months**
 
 This project is fully separate from SAFQA, maintenance-center, and Royal Insurance quotations.
